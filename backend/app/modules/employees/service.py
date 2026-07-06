@@ -1,12 +1,14 @@
 """Employee service — all business logic for employees."""
 
 from datetime import date
+from decimal import Decimal
 from uuid import UUID
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.modules.departments.repository import DepartmentRepository
 from app.modules.departments.schemas import DepartmentResponse
+from app.modules.employees.models import Employee
 from app.modules.employees.repository import EmployeeRepository
 from app.modules.employees.schemas import (
     EmployeeCardResponse,

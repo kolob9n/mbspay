@@ -1,20 +1,9 @@
 """Base declarative model — every entity must inherit from this."""
 
 import uuid
-from typing import Annotated
 
 from sqlalchemy import UUID
-from sqlalchemy.orm import DeclarativeBase, mapped_column
-
-# ---- Types ---------------------------------------------------------------
-uuid_pk = Annotated[
-    uuid.UUID,
-    mapped_column(
-        UUID(as_uuid=True),
-        primary_key=True,
-        default=uuid.uuid4,
-    ),
-]
+from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 
 
 class Base(DeclarativeBase):
@@ -31,4 +20,8 @@ class BaseModel(Base):
 
     __abstract__ = True
 
-    id: uuid_pk  # type: ignore[valid-type]
+    id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True),
+        primary_key=True,
+        default=uuid.uuid4,
+    )

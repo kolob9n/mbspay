@@ -1,6 +1,6 @@
 """Payment Pydantic schemas (v2)."""
 
-from datetime import date, datetime
+from datetime import date as date_type, datetime
 from decimal import Decimal
 from typing import Optional
 from uuid import UUID
@@ -22,14 +22,14 @@ class PaymentItemCreate(BaseModel):
 
 class PaymentCreate(BaseModel):
     number: str = Field(..., min_length=1, max_length=50)
-    date: date
+    date: date_type
     payroll_period_id: UUID
     comment: str | None = None
     items: list[PaymentItemCreate] = Field(..., min_length=1)
 
 
 class PaymentUpdate(BaseModel):
-    date: date | None = None
+    date: date_type | None = None
     comment: str | None = None
 
 
@@ -50,7 +50,7 @@ class PaymentItemResponse(BaseModel):
 class PaymentResponse(BaseModel):
     id: UUID
     number: str
-    date: date
+    date: date_type
     payroll_period_id: UUID
     status: PaymentStatus
     comment: Optional[str] = None
