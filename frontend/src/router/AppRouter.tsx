@@ -11,6 +11,8 @@ import KpiPage from "../modules/kpi/KpiPage";
 import PaymentsPage from "../modules/payments/PaymentsPage";
 import PayrollPage from "../modules/payroll/PayrollPage";
 import PayrollWorkspacePage from "../modules/payroll-workspace/PayrollWorkspacePage";
+import PayslipsListPage from "../modules/payslips/PayslipsListPage";
+import PayslipDetailPage from "../modules/payslips/PayslipDetailPage";
 import SettingsPage from "../modules/settings/SettingsPage";
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
@@ -33,6 +35,8 @@ export default function AppRouter() {
           <Route path="payments" element={<PaymentsPage />} />
           <Route path="payroll" element={<PayrollPage />} />
           <Route path="payroll-workspace" element={<PayrollWorkspacePage />} />
+          <Route path="payslips" element={<PayslipsListPage />} />
+          <Route path="payslips/:id" element={<PayslipDetailPage />} />
           <Route path="settings" element={<SettingsPage />} />
         </Route>
         <Route path="*" element={<Navigate to="/" />} />

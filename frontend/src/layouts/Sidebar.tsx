@@ -7,6 +7,7 @@ import ScheduleIcon from "@mui/icons-material/Schedule";
 import TrendingUpIcon from "@mui/icons-material/TrendingUp";
 import PaymentsIcon from "@mui/icons-material/Payments";
 import AccountBalanceIcon from "@mui/icons-material/AccountBalance";
+import ReceiptLongIcon from "@mui/icons-material/ReceiptLong";
 import SettingsIcon from "@mui/icons-material/Settings";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import { useAuthStore } from "../../store";
@@ -26,6 +27,7 @@ const ALL_ITEMS: MenuItem[] = [
   { label: "KPI", path: "/kpi", icon: <TrendingUpIcon /> },
   { label: "Выплаты", path: "/payments", icon: <PaymentsIcon />, permission: "PAYMENT_CREATE" },
   { label: "Расчёт зарплаты", path: "/payroll", icon: <AccountBalanceIcon />, permission: "PAYROLL_CALCULATE" },
+  { label: "Расчётные листки", path: "/payslips", icon: <ReceiptLongIcon /> },
   { label: "Настройки", path: "/settings", icon: <SettingsIcon />, permission: "SETTINGS_EDIT" },
 ];
 

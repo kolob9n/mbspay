@@ -18,6 +18,8 @@ from app.modules.payments import router as payments_router
 from app.modules.payroll import router as payroll_router
 from app.modules.payroll_ledger import router as ledger_router
 from app.modules.payroll_periods import router as payroll_periods_router
+from app.modules.payroll_workspace import router as payroll_workspace_router
+from app.modules.payslips import router as payslips_router
 from app.modules.positions import router as positions_router
 from app.modules.timesheets import router as timesheets_router
 from app.modules.work_schedules import router as work_schedules_router
@@ -78,6 +80,8 @@ app.include_router(payments_router, prefix="/api/v1")
 app.include_router(payroll_router, prefix="/api/v1")
 app.include_router(ledger_router, prefix="/api/v1")
 app.include_router(payroll_periods_router, prefix="/api/v1")
+app.include_router(payroll_workspace_router, prefix="/api/v1")
+app.include_router(payslips_router, prefix="/api/v1")
 app.include_router(positions_router, prefix="/api/v1")
 app.include_router(timesheets_router, prefix="/api/v1")
 app.include_router(work_schedules_router, prefix="/api/v1")
