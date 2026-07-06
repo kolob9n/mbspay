@@ -24,8 +24,8 @@ def get_service(db: Annotated[AsyncSession, Depends(get_db)]) -> LedgerService:
 
 @router.get("/", response_model=ApiResponse[list[LedgerEntryResponse]])
 async def get_period_ledger(
-    payroll_period_id: UUID = Query(...),
     service: Annotated[LedgerService, Depends(get_service)],
+    payroll_period_id: UUID = Query(...),
 ):
     """Get all ledger entries for a period."""
     return ApiResponse.ok(await service.get_period_entries(payroll_period_id))
@@ -37,10 +37,10 @@ async def get_period_ledger(
 )
 async def get_employee_history(
     employee_id: UUID,
+    service: Annotated[LedgerService, Depends(get_service)],
     payroll_period_id: Annotated[Optional[UUID], Query()] = None,
     page: Annotated[int, Query(ge=1)] = 1,
     size: Annotated[int, Query(ge=1, le=100)] = 100,
-    service: Annotated[LedgerService, Depends(get_service)],
 ):
     """Get ledger history for an employee (optionally filtered by period)."""
     return ApiResponse.ok(

@@ -137,8 +137,8 @@ async def get_results(
 @router.get("/result/{employee_id}", response_model=ApiResponse[PayrollResultResponse])
 async def get_employee_result(
     employee_id: UUID,
-    run_id: UUID = Query(...),
     service: Annotated[PayrollService, Depends(get_service)],
+    run_id: UUID = Query(...),
 ):
     return ApiResponse.ok(await service.get_employee_result(run_id, employee_id))
 
@@ -149,8 +149,8 @@ async def get_employee_result(
 @router.get("/payslip/{employee_id}", response_model=ApiResponse[PayslipResponse])
 async def get_payslip(
     employee_id: UUID,
-    run_id: UUID = Query(...),
     payslip_service: Annotated[PayslipService, Depends(get_payslip_service)],
+    run_id: UUID = Query(...),
 ):
     """Generate employee payslip from calculated payroll results."""
     return ApiResponse.ok(await payslip_service.generate(employee_id, run_id))

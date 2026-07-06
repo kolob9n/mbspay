@@ -26,27 +26,26 @@ class PayslipService:
         results = await self._payroll_repo.get_results(payroll_run_id)
         payslips: list[PayslipResponse] = []
         for r in results:
-            ps = await self._generate_from_result(r, generated_by)
+            ps = await self._generate_from_result(r, run.payroll_period_id, generated_by)
             payslips.append(ps)
         return payslips
 
     async def generate_employee(self, payroll_run_id: UUID, employee_id: UUID, *, generated_by: UUID | None = None) -> PayslipResponse:
+        run = await self._payroll_repo.get_by_id(payroll_run_id)
+        if run is None: raise NotFoundException("PayrollRun не найден.")
         result = await self._payroll_repo.get_employee_result(payroll_run_id, employee_id)
         if result is None: raise NotFoundException("Результат PayrollResult не найден.")
-        return await self._generate_from_result(result, generated_by)
+        return await self._generate_from_result(result, run.payroll_period_id, generated_by)
 
-    async def _generate_from_result(self, r: PayrollResult, generated_by: UUID | None) -> PayslipResponse:
+    async def _generate_from_result(self, r: PayrollResult, payroll_period_id: UUID, generated_by: UUID | None) -> PayslipResponse:
         emp = r.employee
         number = f"PS-{emp.employee_number if emp else 'EMP'}-{datetime.now(timezone.utc).strftime('%Y%m%d%H%M%S')}"
         now = datetime.now(timezone.utc)
 
-        # Resolve payroll_period_id from the PayrollRun
-        period_id = r.payroll_run.payroll_period_id if r.payroll_run else UUID("00000000-0000-0000-0000-000000000000")
-
         ps = await self._repo.create(
             employee_id=r.employee_id,
             payroll_run_id=r.payroll_run_id,
-            payroll_period_id=period_id,
+            payroll_period_id=payroll_period_id,
             number=number,
             status=PayslipStatus.GENERATED,
             generated_at=now,

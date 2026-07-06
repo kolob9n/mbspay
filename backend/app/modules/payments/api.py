@@ -94,9 +94,9 @@ async def cancel_payment(
 @router.post("/import", response_model=ApiResponse[PaymentImportResult])
 async def import_payments(
     file: Annotated[UploadFile, File(...)],
-    payroll_period_id: UUID = Query(...),
     service: Annotated[PaymentService, Depends(get_service)],
     db: Annotated[AsyncSession, Depends(get_db)],
+    payroll_period_id: UUID = Query(...),
 ):
     """Import payments from Excel (.xlsx)."""
     from app.shared.services.payment_import_service import PaymentImportService
