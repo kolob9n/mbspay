@@ -105,7 +105,11 @@ export default function PayrollWorkspacePage() {
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["workspace-"] }),
   });
 
-  const activeStep = modules ? STEPS.findLastIndex((s) => modules[s.key as keyof ModuleStatus]) : -1;
+  const activeStep = modules
+    ? STEPS.reduce((lastIndex, step, index) => (
+        modules[step.key as keyof ModuleStatus] ? index : lastIndex
+      ), -1)
+    : -1;
 
   return (
     <Box>

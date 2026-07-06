@@ -1,7 +1,7 @@
 import { AppBar, Toolbar, Typography, Box, Chip, IconButton, Avatar, Menu, MenuItem, Divider } from "@mui/material";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuthStore, usePeriodStore } from "../../store";
+import { useAuthStore, usePeriodStore } from "../store";
 
 export default function Header() {
   const { user, logout } = useAuthStore();

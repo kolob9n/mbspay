@@ -10,7 +10,7 @@ import AccountBalanceIcon from "@mui/icons-material/AccountBalance";
 import ReceiptLongIcon from "@mui/icons-material/ReceiptLong";
 import SettingsIcon from "@mui/icons-material/Settings";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
-import { useAuthStore } from "../../store";
+import { useAuthStore } from "../store";
 
 const DRAWER_WIDTH = 240;
 
