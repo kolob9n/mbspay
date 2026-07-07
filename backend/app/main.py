@@ -7,6 +7,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
 from app.core.config import settings
+from app.core.database import async_session
 from app.modules.attendance_types import router as attendance_types_router
 from app.modules.calendar import router as calendar_router
 from app.modules.defects import router as defects_router
@@ -29,7 +30,14 @@ from app.shared.responses import ApiResponse
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # Startup
+    # Startup — seed default data (idempotent)
+    async with async_session() as session:
+        try:
+            from app.core.seed import seed_all
+            results = await seed_all(session)
+            print(f"[seed] {results}")
+        except Exception as e:
+            print(f"[seed] WARNING: seeding skipped ({e})")
     yield
     # Shutdown
 
