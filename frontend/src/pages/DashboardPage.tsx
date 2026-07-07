@@ -1,38 +1,90 @@
-import { Box, Typography, Paper, Grid, CircularProgress } from "@mui/material";
+﻿import { Box, Paper, Typography } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
 import apiClient from "../api/client";
-import { ApiResponse } from "../types";
+import { ApiResponse, PaginatedResponse, PayrollPeriod } from "../types";
 
-function DashboardWidget({ title, value, color }: { title: string; value: string | number; color: string }) {
+function DashboardWidget({
+  title,
+  value,
+  color,
+}: {
+  title: string;
+  value: string | number;
+  color: string;
+}) {
   return (
-    <Paper sx={{ p: 3, borderLeft: 4, borderColor: color }}>
-      <Typography variant="subtitle2" color="text.secondary">{title}</Typography>
-      <Typography variant="h4" sx={{ mt: 1 }}>{value}</Typography>
+    <Paper
+      elevation={0}
+      sx={{
+        p: 2.5,
+        minHeight: 120,
+        borderRadius: 2,
+        border: "1px solid",
+        borderColor: "divider",
+        borderLeft: `5px solid ${color}`,
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "space-between",
+      }}
+    >
+      <Typography variant="body2" color="text.secondary">
+        {title}
+      </Typography>
+      <Typography variant="h4" fontWeight={700}>
+        {value}
+      </Typography>
     </Paper>
   );
 }
 
 export default function DashboardPage() {
-  const { data: empData } = useQuery({ queryKey: ["employees-count"], queryFn: () => apiClient.get<ApiResponse<{ items: unknown[] }>>("/employees?size=1") });
-  const { data: periodData } = useQuery({ queryKey: ["periods-current"], queryFn: () => apiClient.get<ApiResponse<unknown>>("/periods/current") });
+  const { data: empData } = useQuery({
+    queryKey: ["employees-count"],
+    queryFn: () => apiClient.get<ApiResponse<PaginatedResponse<unknown>>>("/employees/?size=1"),
+    retry: false,
+  });
+
+  const { data: periodData } = useQuery({
+    queryKey: ["periods-current"],
+    queryFn: () => apiClient.get<ApiResponse<PayrollPeriod>>("/periods/current"),
+    retry: false,
+  });
+
+  const employeesTotal = empData?.data?.data?.total ?? "—";
+  const currentPeriod = periodData?.data?.data;
+  const periodLabel = currentPeriod
+    ? `${String(currentPeriod.month).padStart(2, "0")}.${currentPeriod.year}`
+    : "—";
 
   return (
-    <Box>
-      <Typography variant="h5" sx={{ mb: 3 }}>Дашборд</Typography>
-      <Grid container spacing={3}>
-        <Grid item xs={12} sm={6} lg={3}>
-          <DashboardWidget title="Сотрудников" value={empData?.data?.data?.items?.length ?? "—"} color="#1565c0" />
-        </Grid>
-        <Grid item xs={12} sm={6} lg={3}>
-          <DashboardWidget title="Активный период" value={periodData?.data?.data ? "✓" : "—"} color="#ff6f00" />
-        </Grid>
-        <Grid item xs={12} sm={6} lg={3}>
-          <DashboardWidget title="Неподтв. табели" value="—" color="#9c27b0" />
-        </Grid>
-        <Grid item xs={12} sm={6} lg={3}>
-          <DashboardWidget title="Документов выплат" value="—" color="#4caf50" />
-        </Grid>
-      </Grid>
+    <Box
+      sx={{
+        width: "100%",
+        maxWidth: 1200,
+        mx: "auto",
+      }}
+    >
+      <Typography variant="h4" fontWeight={700} sx={{ mb: 3 }}>
+        Дашборд
+      </Typography>
+
+      <Box
+        sx={{
+          display: "grid",
+          gridTemplateColumns: {
+            xs: "1fr",
+            sm: "repeat(2, minmax(0, 1fr))",
+            lg: "repeat(4, minmax(0, 1fr))",
+          },
+          gap: 2.5,
+          width: "100%",
+        }}
+      >
+        <DashboardWidget title="Сотрудников" value={employeesTotal} color="#3f51b5" />
+        <DashboardWidget title="Активный период" value={periodLabel} color="#ff6d00" />
+        <DashboardWidget title="Неутверждено табелей" value="—" color="#9c27b0" />
+        <DashboardWidget title="Документов выплат" value="—" color="#4caf50" />
+      </Box>
     </Box>
   );
 }

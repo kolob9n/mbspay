@@ -22,6 +22,7 @@ from app.modules.payroll_periods import router as payroll_periods_router
 from app.modules.payroll_workspace import router as payroll_workspace_router
 from app.modules.payslips import router as payslips_router
 from app.modules.positions import router as positions_router
+from app.modules.security import router as security_router
 from app.modules.timesheets import router as timesheets_router
 from app.modules.work_schedules import router as work_schedules_router
 from app.shared.exceptions import AppException
@@ -91,5 +92,6 @@ app.include_router(payroll_periods_router, prefix="/api/v1")
 app.include_router(payroll_workspace_router, prefix="/api/v1")
 app.include_router(payslips_router, prefix="/api/v1")
 app.include_router(positions_router, prefix="/api/v1")
+app.include_router(security_router, prefix="/api/v1")
 app.include_router(timesheets_router, prefix="/api/v1")
 app.include_router(work_schedules_router, prefix="/api/v1")

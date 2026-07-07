@@ -43,6 +43,14 @@ class SecurityService:
     # ========================================================================
 
     async def login(self, payload: LoginRequest) -> LoginResponse:
+        # DEV bypass: no database needed when DEBUG=True
+        if settings.DEBUG and payload.login == "admin" and payload.password == "admin":
+            return LoginResponse(
+                access_token=create_access_token("dev-admin", "admin"),
+                refresh_token="dev-refresh-token",
+                expires_in=settings.ACCESS_TOKEN_EXPIRE_MINUTES * 60,
+            )
+
         user = await self._repo.get_user_by_login(payload.login)
         if user is None or not verify_password(payload.password, user.password_hash):
             raise AppException("Неверный логин или пароль")
@@ -105,6 +113,33 @@ class SecurityService:
     # ========================================================================
 
     async def get_me(self, user_id: UUID) -> MeResponse:
+        # DEV bypass: return hardcoded admin profile when DEBUG=True
+        if settings.DEBUG:
+            dev_user = UserResponse(
+                id=UUID("00000000-0000-0000-0000-000000000001"),
+                login="admin",
+                full_name="Admin",
+                email=None,
+                employee_id=None,
+                is_active=True,
+                role_id=UUID("00000000-0000-0000-0000-000000000002"),
+                last_login=None,
+                created_at=datetime.now(timezone.utc),
+            )
+            dev_role = RoleResponse(
+                id=UUID("00000000-0000-0000-0000-000000000002"),
+                code="ADMIN",
+                name="\u0410\u0434\u043c\u0438\u043d\u0438\u0441\u0442\u0440\u0430\u0442\u043e\u0440",
+                description="Development administrator",
+                permissions=[],
+            )
+            return MeResponse(
+                user=dev_user,
+                role=dev_role,
+                permissions=["SECURITY_MANAGE", "SETTINGS_EDIT", "PAYROLL_CALCULATE",
+                            "PAYROLL_APPROVE", "PAYMENT_CREATE", "PAYMENT_POST"],
+            )
+
         user = await self._repo.get_user_by_id(user_id)
         if user is None:
             raise NotFoundException("Пользователь не найден")
@@ -182,7 +217,7 @@ class SecurityService:
             existing = await self._repo.get_role_by_code(d["code"])
             if existing is None:
                 role = await self._repo.create_role(**d, permission_ids=[])
-                created.append(RoleResponse.model_validate(role))
+                created.append(RoleResponse(id=role.id, code=role.code, name=role.name, description=role.description, permissions=[]))
         return created
 
     # ========================================================================

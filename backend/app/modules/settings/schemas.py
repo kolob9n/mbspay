@@ -25,6 +25,6 @@ class SettingResponse(BaseModel):
     value: str
     value_type: str
     description: Optional[str] = None
-    updated_at: datetime
+    updated_at: datetime | None = None
 
     model_config = {"from_attributes": True}

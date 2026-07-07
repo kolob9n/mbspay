@@ -9,11 +9,6 @@ from sqlalchemy.ext.asyncio import create_async_engine
 from app.core.config import settings
 from app.shared.base import Base
 
-# Standard library imports
-import os
-import tempfile
-import uuid as _uuid
-
 # Import all models so Base.metadata is populated
 import app.modules.attendance_types.models  # noqa: F401
 import app.modules.calendar.models  # noqa: F401
@@ -28,11 +23,12 @@ import app.modules.payroll_ledger.models  # noqa: F401
 import app.modules.payroll_periods.models  # noqa: F401
 import app.modules.payslips.models  # noqa: F401
 import app.modules.positions.models  # noqa: F401
+import app.modules.security.models  # noqa: F401
+import app.modules.settings.models  # noqa: F401
 import app.modules.timesheets.models  # noqa: F401
 import app.modules.work_schedules.models  # noqa: F401
-
-# Replace UUID function for mocks
-_uuid4 = _uuid.uuid4
+import app.shared.workflow.models  # noqa: F401
+import app.shared.audit.models  # noqa: F401
 
 config = context.config
 if config.config_file_name is not None:
